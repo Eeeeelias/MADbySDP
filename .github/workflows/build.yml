@@ -1,0 +1,33 @@
+name: Build binaries
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+
+      - name: Install dependencies
+        run: pip install pyinstaller pyside6 pandas openpyxl
+
+      - name: Build executable
+        run: pyinstaller main.py --onefile --windowed --name xlsx_processor-${{ matrix.os }}
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*

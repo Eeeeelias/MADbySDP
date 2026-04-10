@@ -15,7 +15,7 @@ class Ui_MainWindow(object):
 
     def setupUi(self, MainWindow):
 
-        MainWindow.setWindowTitle("Automatic Motion Grading")
+        MainWindow.setWindowTitle("Motion Artifact Detection by Structure and Density Parameters")
         MainWindow.resize(900, 600)
 
         self.central_widget = QWidget()
@@ -101,5 +101,5 @@ class Ui_MainWindow(object):
         self.layout.addLayout(self.bottom_row)
 
         # Status label
-        self.status_label = QLabel("Status: waiting for file")
+        self.status_label = QLabel("Status: Waiting for file")
         self.layout.addWidget(self.status_label)

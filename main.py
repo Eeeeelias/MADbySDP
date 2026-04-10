@@ -1,7 +1,11 @@
 from PySide6.QtWidgets import QApplication
 from app.window import MainWindow
 
-app = QApplication([])
-window = MainWindow()
-window.show()
-app.exec()
+def main():
+    app = QApplication([])
+    window = MainWindow()
+    window.show()
+    app.exec()
+
+if __name__ == '__main__':
+    main()
