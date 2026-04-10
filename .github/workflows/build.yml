@@ -25,10 +25,10 @@ jobs:
           python-version: "3.14"
 
       - name: Install dependencies
-        run: pip install pyinstaller pyside6 pandas openpyxl
+        run: pip install pyinstaller pyside6 pandas openpyxl scikit-learn
 
       - name: Build executable
-        run: pyinstaller main.py --onefile --windowed --collect-all PySide6 --add-data "models:models" --name mad_by_sdp-${{ matrix.os }}
+        run: pyinstaller main.py --onefile --windowed --add-data "models:models" --name mad_by_sdp-${{ matrix.os }}
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
