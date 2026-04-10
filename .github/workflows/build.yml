@@ -28,7 +28,7 @@ jobs:
         run: pip install pyinstaller pyside6 pandas openpyxl
 
       - name: Build executable
-        run: pyinstaller main.py --onefile --windowed --name xlsx_processor-${{ matrix.os }}
+        run: pyinstaller main.py --onefile --windowed --collect-all PySide6 --add-data "models:models" --name mad_by_sdp-${{ matrix.os }}
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
