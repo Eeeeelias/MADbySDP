@@ -30,7 +30,21 @@ jobs:
       - name: Build executable
         run: pyinstaller main.py --onefile --windowed --add-data "models:models" --collect-submodules sklearn --collect-submodules scipy --collect-submodules numpy --name mad_by_sdp-${{ matrix.os }}
 
+      - name: Create DMG (macOS)
+        if: matrix.os == 'macos-latest'
+        run: |
+          brew install create-dmg
+          create-dmg \
+            --volname "Mad by SDP" \
+            --window-size 900 600 \
+            --app-drop-link 350 150 \
+            "dist/mad_by_sdp-macos.dmg" \
+            "dist/mad_by_sdp-macos-latest.app"
+
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
-          files: dist/*
+          files: |
+            dist/*.exe
+            dist/*.dmg
+            dist/mad_by_sdp-ubuntu-latest
