@@ -1,3 +1,9 @@
 .idea
 .venv
 .env
+
+.DS_Store
+.localized
+__MACOSX/
+.AppleDouble
+.LSOverride

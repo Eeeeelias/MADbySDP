@@ -7,7 +7,7 @@ from PySide6.QtWidgets import (
     QHBoxLayout,
     QTableWidget,
     QRadioButton,
-    QGroupBox, QCheckBox,
+    QGroupBox, QCheckBox, QComboBox
 )
 
 
@@ -34,6 +34,15 @@ class Ui_MainWindow(object):
         # Preview table
         self.table = QTableWidget()
         self.layout.addWidget(self.table)
+
+        # Select sheet
+        self.sheet_label = QLabel("Select sheet:")
+        self.sheet_label.setAlignment(Qt.AlignLeft)
+        self.layout.addWidget(self.sheet_label)
+        self.option_sheet = QComboBox()
+        self.sheet_label.setAlignment(Qt.AlignLeft)
+        self.layout.addWidget(self.option_sheet)
+    
 
         # select model
         self.options_group = QGroupBox("Model Choice")

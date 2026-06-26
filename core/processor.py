@@ -1,4 +1,5 @@
 import pickle
+import pandas as pd
 
 from openpyxl.formatting.rule import CellIsRule
 from openpyxl.reader.excel import load_workbook
@@ -6,9 +7,10 @@ from openpyxl.styles import PatternFill
 from openpyxl.utils import get_column_letter
 
 from core.resources import resource_path
+from core.xct_mapping import COL_MAP_XCT1, COL_MAP_XCT2
 
-PRED_COLS = ['Tt.BMD', 'Tt.Ar', 'Tb.BMD', 'BV/TV', 'Tb.N', 'Tb.Th', 'Tb.Sp', 'Tb.1/N.SD',
-             'Tb.Ar', 'Ct.BMD', 'Ct.Th', 'Ct.Po', 'Ct.Po.Dm', 'Ct.Pm', 'Ct.Ar']
+PRED_COLS = ['tt.bmd', 'tt.ar', 'tb.bmd', 'bv/tv', 'tb.n', 'tb.th', 'tb.sp', 'tb.1/n.sd',
+             'tb.ar', 'ct.bmd', 'ct.th', 'ct.po', 'ct.po.dm', 'ct.pm', 'ct.ar']
 
 def load_scaler(xct_gen):
     scalers = {}
@@ -61,13 +63,24 @@ def conformal_marking(output_path, dataframe, highlight):
 
     wb.save(output_path)
 
-def run_processing(dataframe, model_type, xct_gen, conformal, output_path):
+def save_excel(dataframe, file_path, sheet_name):
+    with pd.ExcelWriter(file_path, engine='openpyxl', mode='a', if_sheet_exists='replace') as writer:
+        dataframe.to_excel(writer, sheet_name=sheet_name, index=False)
+
+def run_processing(dataframe: pd.DataFrame, model_type, xct_gen, conformal, output_path, sheet_name):
 
     # remove XCT2 specific columns from pred_cols if not needed
     selected_cols = PRED_COLS.copy()
+    col_map = COL_MAP_XCT2
     if xct_gen == 1:
-        selected_cols.remove('Ct.Po')
-        selected_cols.remove('Ct.Po.Dm')
+        selected_cols.remove('ct.po')
+        selected_cols.remove('ct.po.dm')
+        col_map = COL_MAP_XCT1
+    
+    original_cols = dataframe.columns.copy()
+
+    dataframe.rename(columns=col_map, inplace=True)
+    dataframe.columns = dataframe.columns.str.lower()
 
     # load needed models
     scalers = load_scaler(xct_gen)
@@ -77,14 +90,19 @@ def run_processing(dataframe, model_type, xct_gen, conformal, output_path):
     output_probs = []
 
     for _, row in dataframe.iterrows():
-        if row['Site'].startswith('R'):
+        if pd.isna(row["site"]):
+            output_preds.append("invalid")
+            output_probs.append(-1)
+            continue # skip rows without measurement data
+        if row['site'].startswith('R'):
             site = 'radius'
-        elif row['Site'].startswith('T'):
+        elif row['site'].startswith('T'):
             site = 'tibia'
         else:
-            raise Exception(f"Unknown site {row['Site']}: Make sure Site column indicates Radius (R) or Tibia (T).")
+            raise Exception(f"Unknown site {row['site']}: Make sure Site column indicates Radius (R) or Tibia (T).")
 
-        values = [row[selected_cols].tolist()]
+        values = [row[selected_cols].fillna(0).tolist()]
+        print(values)
         values_transformed = scalers[site].transform(values)
         prediction = models[site].predict(values_transformed)
         prediction_prob = models[site].predict_proba(values_transformed)
@@ -94,8 +112,9 @@ def run_processing(dataframe, model_type, xct_gen, conformal, output_path):
 
     dataframe['Grading'] = output_preds
     dataframe['Confidence'] = output_probs
+    dataframe.columns = list(original_cols) + ["Grading", "Confidence"]
 
-    dataframe.to_excel(output_path, index=False)
+    save_excel(dataframe, output_path, sheet_name)
 
     if len(conformal) > 0:
         conformal_marking(output_path, dataframe, conformal)

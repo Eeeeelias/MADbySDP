@@ -1,0 +1,33 @@
+COL_MAP_XCT1 = {
+    'tTb.1/N.SD1': 'tb.1/n.sd',
+    'tTb.Sp1': 'tb.sp',
+    'tTb.Th1': 'tb.th',
+    'tTb.N1': 'tb.n',
+    'TrabArea1': 'tb.ar',
+    'CortArea1': 'ct.ar',
+    'tBV/TV1': 'bv/tv',
+    'Ct.Pm1': 'ct.pm',
+    'Ct.Th1': 'ct.th',
+    'D100-1': 'tt.bmd',
+    'Tt.Ar1': 'tt.ar',
+    'Dtrab1': 'tb.bmd',
+    'Dcomp1': 'ct.bmd',
+}
+
+
+COL_MAP_XCT2 = {'Tb.1/N.SD1': 'tb.1/n.sd',
+           'Tb.Sp1': 'tb.sp',
+           'Tb.Th1': 'tb.th',
+           'Tb.N1': 'tb.n',
+           'Tb.Ar1': 'tb.ar',
+           'Tb.BV/TV1': 'bv/tv',
+           'Ct.Pm1': 'ct.pm',
+           'Ct.Th1': 'ct.th',
+           'Ct.Ar1': 'ct.ar',
+           'Tot.vBMD1': 'tt.bmd',
+           'Tb.vBMD1': 'tb.bmd',
+           'Ct.vBMD1': 'ct.bmd',
+           'Ct.Po1': 'ct.po',
+           'Ct.Po.Dm1': 'ct.po.dm',
+           'Tt.Ar1': 'tt.ar',
+           }
