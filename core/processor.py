@@ -102,7 +102,6 @@ def run_processing(dataframe: pd.DataFrame, model_type, xct_gen, conformal, outp
             raise Exception(f"Unknown site {row['site']}: Make sure Site column indicates Radius (R) or Tibia (T).")
 
         values = [row[selected_cols].fillna(0).tolist()]
-        print(values)
         values_transformed = scalers[site].transform(values)
         prediction = models[site].predict(values_transformed)
         prediction_prob = models[site].predict_proba(values_transformed)

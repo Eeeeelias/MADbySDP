@@ -220,9 +220,7 @@ class MainWindow(QMainWindow):
 
         if not save_path:
             return
-        
-        print("Running this")
-        
+                
         shutil.copy(self.file_path, save_path)
 
         try:
