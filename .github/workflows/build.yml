@@ -12,7 +12,8 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        # Added macos-15-intel to the build array
+        os: [ubuntu-latest, windows-latest, macos-latest, macos-15-intel]
 
     runs-on: ${{ matrix.os }}
 
@@ -31,15 +32,16 @@ jobs:
         run: pyinstaller main.py --onefile --windowed --add-data "models:models" --collect-submodules sklearn --collect-submodules scipy --collect-submodules numpy --name mad_by_sdp-${{ matrix.os }}
 
       - name: Create DMG (macOS)
-        if: matrix.os == 'macos-latest'
+        # Changed condition to catch any macOS runner in the matrix
+        if: contains(matrix.os, 'macos')
         run: |
           brew install create-dmg
           create-dmg \
             --volname "Mad by SDP" \
             --window-size 900 600 \
             --app-drop-link 350 150 \
-            "dist/mad_by_sdp-macos.dmg" \
-            "dist/mad_by_sdp-macos-latest.app"
+            "dist/mad_by_sdp-${{ matrix.os }}.dmg" \
+            "dist/mad_by_sdp-${{ matrix.os }}.app"
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
